@@ -1,0 +1,24 @@
+<%- include('./components/header')%>
+
+<div class=" mt-5 mx-auto text-center container row marketing text-secondary border border-1 shadow">
+    <div class="p-5">
+
+        <div class="mx-auto">
+            <% if (!user.avatar) { %>
+                <img class="img-fluid img-thumbnail w-50" src="/../public/uploads/default.png">
+            <% } else { %>
+                <img class="img-fluid img-thumbnail w-50" src="/../public/uploads/<%= user.avatar %>">
+           <% } %>
+        </div>
+
+        <h3><%= user.username %></h3>
+        <h4><%= user.email %></h4>
+
+        <form action="/m/upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" value="im hidden :)" name="hidden">
+            <input type="file" name="image" /><br />
+            <input type="submit" value="Save" class="btn btn-secondary" />
+        </form>
+        (logga ut/in för att se din nya fina bild)
+    </div>
+</div>

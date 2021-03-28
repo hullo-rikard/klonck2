@@ -1,0 +1,66 @@
+<%- include('./components/header')%>
+<div style="min-height: 90vh;" class="col-12 row m-0">
+    
+    <div class="col-10 p-0 d-flex flex-column justify-content-between"> 
+        <ul class="messagesTemplate" id="channelMessages">
+            <% if(typeof posts !== 'undefined') { %>
+                <% if(posts.length === 0) {%>
+                <li class="no-messages">No messages yet...</li>
+                <%}%>
+                <% posts.forEach(post => { %>
+                    <li>
+                        <h5><%= post.username %></h5>
+                        <p id="<%= post.message_id %>"> <%= post.message %></p>
+                        <%  const d = post.datetime_created;
+                            const datum = d.getDate()
+                            const month = d.getMonth()+1
+                            const fullYear = d.getFullYear()
+                            const hours = d.getHours()
+                            let minutes = d.getMinutes()
+                            minutes = minutes > 9 ? minutes : '0' + minutes;    
+                            const currDate = `${fullYear}-${month}-${datum} ${hours}:${minutes}`
+                        %>
+                        <h6><%= currDate %></h6>
+                        <% if (post.user_id.toString() == user.user_id.toString()) { %>
+                            <button data-id="<%= post.message_id %>"  class="delete_icon">❌</button>
+                            <button data-bs-toggle="modal" data-bs-target="#editPostModal<%= post.message_id %>" data-id="<%= post.message_id %>" class="edit_icon">✏️</button>
+                            <div class="modal fade" id="editPostModal<%= post.message_id %>" tabindex="-1" aria-labelledby="editPostModal<%= post.message_id %>Label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editPostModal<%= post.message_id %>Label">Edit your message</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input value="<%= post.message %>" type="text" class="w-100">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button data-bs-dismiss="modal" data-id="<%= post.message_id %>" type="button" class="btn btn-primary updatePost">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </li>
+                <% }) %>
+            <% } %>
+        </ul>
+        <form action="/m/room" method="POST">
+            <input name="message" autocomplete="off" class="w-75"/>
+            <input type="hidden" name="to_room_id" value="<%=room_id%>">
+            <input type="hidden" name="room_name" value="<%=room_name%>">
+            <input type="hidden" name="to_user_id" value="<%=to_user_id%>">
+            <input type="hidden" name="to_username" value="<%=to_username%>">
+            <button id="channelSubmitButton">Send</button>
+        </form> 
+        
+    </div>
+    <div class="col-2 h-auto p-0">
+        <%#- include('./components/sidebar')%>
+    </div>
+</div>
+<input hidden value="<%= user.name %>" id="username_channel" type="text">
+<input hidden value="<%= user.user_id %>" id="id_channel" type="text">
+<input hidden value="<%= user.user_name %>" id="channel_id_channel" type="text">
+<script src="../public/scripts/channel.js"></script>
